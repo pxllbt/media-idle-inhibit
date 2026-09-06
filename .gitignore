@@ -1,0 +1,11 @@
+# Compiled QML bytecode
+*.qmlc
+.qmlcache
+.qmlcache/
+
+# Editor
+*.swp
+*~
+
+# OS metadata
+.DS_Store

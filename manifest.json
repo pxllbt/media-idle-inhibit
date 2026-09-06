@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "io.github.pixllbeat.media-idle-inhibit",
+  "name": "Media Idle Inhibit",
+  "version": "1.0.0",
+  "author": "pixllbeat",
+  "license": "MIT",
+  "homepage": "https://github.com/pxllbt/media-idle-inhibit",
+  "description": "Suppresses screensaver and lock while media is actively playing via MPRIS.",
+  "kinds": [
+    "service",
+    "bar-widget"
+  ],
+  "keepLoaded": true,
+  "entryPoints": {
+    "service": "Service.qml",
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Media Idle Inhibit",
+    "description": "Icon + pill indicator while idle is inhibited",
+    "category": "System",
+    "allowMultiple": false,
+    "defaultSection": "right"
+  }
+}
