@@ -23,19 +23,38 @@ D-Bus MPRIS and `omarchy-toggle-idle`. When a known player starts playback it ru
 
 ## Install
 
+The plugin ships as a single folder of files — a whole, self-contained plugin.
+
+**Quick install (zip, no git required):**
+
 ```bash
-cd /path/to/media-idle-inhibit
+curl -fsSL https://github.com/pxllbt/media-idle-inhibit/archive/refs/tags/v1.0.0.zip -o media-idle-inhibit.zip
+unzip media-idle-inhibit.zip
+cd media-idle-inhibit-1.0.0
 ./install.sh
 ```
 
 `install.sh` copies the plugin to
 `~/.config/omarchy/plugins/io.github.pixllbeat.media-idle-inhibit`, validates the
-manifest, enables it in `~/.config/omarchy/shell.json`, and restarts the shell.
+manifest, enables it in `~/.config/omarchy/shell.json`, runs `validate.sh`, and
+restarts the shell.
+
+**From a local checkout:**
+
+```bash
+cd /path/to/media-idle-inhibit
+./install.sh
+```
 
 ### Breaking change
 
-If a previous `pixllbeat.media-idle-inhibit` install exists, uninstall it first: it
-is not auto-migrated. The new plugin id is `io.github.pixllbeat.media-idle-inhibit`.
+If a previous `pixllbeat.media-idle-inhibit` install exists, uninstall it first:
+
+```bash
+~/.config/omarchy/plugins/pixllbeat.media-idle-inhibit/uninstall.sh
+```
+
+The new plugin id is `io.github.pixllbeat.media-idle-inhibit`.
 
 ## Uninstall
 
@@ -81,7 +100,7 @@ Returns a JSON object with `mediaPlaying`, `activePlayerName`, `lastToggle`,
 - Only one playing player is tracked at a time (the first known player found).
 - The idle toggle is best-effort: if `omarchy-toggle-idle` exits non-zero, the error
   is recorded in `lastError` and surfaced via the bar widget tooltip, with no retry.
-- The bar widget reflects the service state over IPC; it does not drive toggling itself.
+- The bar widget reflects service state over IPC; it does not drive toggling itself.
 
 ## Validation
 
@@ -91,13 +110,8 @@ Run the bundled validator:
 ~/.config/omarchy/plugins/io.github.pixllbeat.media-idle-inhibit/validate.sh
 ```
 
-Manual smoke test:
-1. Start video playback in mpv, vlc, or firefox.
-2. Wait >150s without input.
-3. Confirm screensaver/lock does not trigger.
-4. Stop/close media.
-5. Wait >150s without input.
-6. Confirm screensaver/lock works normally.
+Manual smoke test: start playback in mpv/vlc/firefox → wait >150s → screensaver
+must not trigger; stop media → wait → screensaver works normally.
 
 ## License
 
