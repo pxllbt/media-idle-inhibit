@@ -28,7 +28,7 @@ The plugin ships as a single folder of files — a whole, self-contained plugin.
 **Quick install (zip, no git required):**
 
 ```bash
-curl -fsSL https://github.com/pxllbt/media-idle-inhibit/archive/refs/tags/v1.0.0.zip -o media-idle-inhibit.zip
+curl -fsSL https://github.com/pxllbt/media-idle-inhibit/archive/refs/tags/v1.1.0.zip -o media-idle-inhibit.zip
 unzip media-idle-inhibit.zip
 cd media-idle-inhibit-1.0.0
 ./install.sh
