@@ -1,4 +1,4 @@
-# io.github.pixllbeat.media-idle-inhibit
+# io.github.pxllbt.media-idle-inhibit
 
 <https://github.com/pxllbt/media-idle-inhibit>
 
@@ -11,7 +11,7 @@ D-Bus MPRIS and `omarchy-toggle-idle`. When a known player starts playback it ru
 - Signal-based MPRIS detection via Quickshell's `Quickshell.Services.Mpris` (no polling)
 - Automatic toggle only for recognized players; other MPRIS clients are ignored
 - Optional bar widget: a `MEDIA` pill with icon + player name while active
-- IPC diagnostics via `qs ipc call io-github-pixllbeat-media-idle-inhibit status`
+- IPC diagnostics via `qs ipc call io-github-pxllbt-media-idle-inhibit status`
 - Stdout/stderr capture and error state surfaced through the bar widget tooltip
 
 ## Supported players
@@ -35,9 +35,19 @@ cd media-idle-inhibit-1.0.0
 ```
 
 `install.sh` copies the plugin to
-`~/.config/omarchy/plugins/io.github.pixllbeat.media-idle-inhibit`, validates the
+`~/.config/omarchy/plugins/io.github.pxllbt.media-idle-inhibit`, validates the
 manifest, enables it in `~/.config/omarchy/shell.json`, runs `validate.sh`, and
 restarts the shell.
+
+**Git-managed install (enables automatic updates):**
+
+```bash
+omarchy plugin add https://github.com/pxllbt/media-idle-inhibit.git --enable
+omarchy plugin update io.github.pxllbt.media-idle-inhibit
+```
+
+Installing via `omarchy plugin add` keeps a `.git` checkout, so
+`omarchy plugin update` pulls new releases automatically.
 
 **From a local checkout:**
 
@@ -54,18 +64,18 @@ If a previous `pixllbeat.media-idle-inhibit` install exists, uninstall it first:
 ~/.config/omarchy/plugins/pixllbeat.media-idle-inhibit/uninstall.sh
 ```
 
-The new plugin id is `io.github.pixllbeat.media-idle-inhibit`.
+The new plugin id is `io.github.pxllbt.media-idle-inhibit`.
 
 ## Uninstall
 
 ```bash
-~/.config/omarchy/plugins/io.github.pixllbeat.media-idle-inhibit/uninstall.sh
+~/.config/omarchy/plugins/io.github.pxllbt.media-idle-inhibit/uninstall.sh
 ```
 
 ## Manual install
 
 ```bash
-cp -r /path/to/media-idle-inhibit ~/.config/omarchy/plugins/io.github.pixllbeat.media-idle-inhibit
+cp -r /path/to/media-idle-inhibit ~/.config/omarchy/plugins/io.github.pxllbt.media-idle-inhibit
 ```
 
 Add the plugin to `~/.config/omarchy/shell.json`:
@@ -73,7 +83,7 @@ Add the plugin to `~/.config/omarchy/shell.json`:
 ```json
 {
   "plugins": [
-    { "id": "io.github.pixllbeat.media-idle-inhibit" }
+    { "id": "io.github.pxllbt.media-idle-inhibit" }
   ]
 }
 ```
@@ -89,7 +99,7 @@ omarchy restart shell
 Query the service diagnostic status over IPC:
 
 ```bash
-qs ipc call io-github-pixllbeat-media-idle-inhibit status
+qs ipc call io-github-pxllbt-media-idle-inhibit status
 ```
 
 Returns a JSON object with `mediaPlaying`, `activePlayerName`, `lastToggle`,
@@ -107,7 +117,7 @@ Returns a JSON object with `mediaPlaying`, `activePlayerName`, `lastToggle`,
 Run the bundled validator:
 
 ```bash
-~/.config/omarchy/plugins/io.github.pixllbeat.media-idle-inhibit/validate.sh
+~/.config/omarchy/plugins/io.github.pxllbt.media-idle-inhibit/validate.sh
 ```
 
 Manual smoke test: start playback in mpv/vlc/firefox → wait >150s → screensaver

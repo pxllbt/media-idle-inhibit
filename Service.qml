@@ -116,7 +116,7 @@ Item {
   height: 0
 
   IpcHandler {
-    target: "io-github-pixllbeat-media-idle-inhibit"
+    target: "io-github-pxllbt-media-idle-inhibit"
 
     function status(): string {
       return JSON.stringify(root.diagnosticStatus())

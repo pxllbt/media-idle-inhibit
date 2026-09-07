@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "io.github.pixllbeat.media-idle-inhibit",
+  "id": "io.github.pxllbt.media-idle-inhibit",
   "name": "Media Idle Inhibit",
   "version": "1.0.0",
-  "author": "pixllbeat",
+  "author": "pxllbt",
   "license": "MIT",
   "homepage": "https://github.com/pxllbt/media-idle-inhibit",
   "description": "Suppresses screensaver and lock while media is actively playing via MPRIS.",

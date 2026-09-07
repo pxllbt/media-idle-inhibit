@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-PLUGIN_ID="io.github.pixllbeat.media-idle-inhibit"
+PLUGIN_ID="io.github.pxllbt.media-idle-inhibit"
 PLUGIN_DIR="$HOME/.config/omarchy/plugins/$PLUGIN_ID"
 STATE_FILE="$HOME/.local/state/omarchy/indicators/stay-awake"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -72,7 +72,7 @@ check_toggle_side_effects() {
 
 check_ipc_target() {
   echo "== Checking IPC target naming =="
-  grep -q 'target: "io-github-pixllbeat-media-idle-inhibit"' "$PLUGIN_DIR/Service.qml" || fail "IPC target name mismatch"
+  grep -q 'target: "io-github-pxllbt-media-idle-inhibit"' "$PLUGIN_DIR/Service.qml" || fail "IPC target name mismatch"
   pass "IPC target name matches plugin id pattern"
 }
 

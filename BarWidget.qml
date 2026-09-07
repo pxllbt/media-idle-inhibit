@@ -7,13 +7,13 @@ import qs.Ui as Ui
 Ui.Panel {
   id: root
 
-  moduleName: "io.github.pixllbeat.media-idle-inhibit"
+  moduleName: "io.github.pxllbt.media-idle-inhibit"
   manageIpc: false
   HostTokens { id: hostTokens; bar: root.bar }
 
   readonly property var idleService: bar && bar.shell
     && typeof bar.shell.serviceFor === "function"
-    ? bar.shell.serviceFor("io.github.pixllbeat.media-idle-inhibit") : null
+    ? bar.shell.serviceFor("io.github.pxllbt.media-idle-inhibit") : null
   readonly property bool mediaPlaying: idleService
     ? idleService.mediaPlaying === true : false
   readonly property string playerName: idleService

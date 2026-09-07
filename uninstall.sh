@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-PLUGIN_ID="io.github.pixllbeat.media-idle-inhibit"
+PLUGIN_ID="io.github.pxllbt.media-idle-inhibit"
 PLUGIN_DIR="$HOME/.config/omarchy/plugins/$PLUGIN_ID"
 SHELL_JSON="$HOME/.config/omarchy/shell.json"
 
