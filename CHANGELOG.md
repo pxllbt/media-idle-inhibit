@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.2.1] - 2026-09-08
+
+### Fixed
+- Bar widget now builds on the `BarWidget`/`WidgetButton` primitives shipped
+  with Omarchy, replacing the non-existent `PillSurface` UI that made the
+  widget fail to load (the service itself was unaffected).
+
 ## [1.2.0] - 2026-09-08
 
 ### Fixed

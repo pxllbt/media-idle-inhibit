@@ -49,8 +49,8 @@ check_qml_imports() {
   grep -q "Process" "$TARGET_DIR/Service.qml" || fail "Service.qml missing Process"
   grep -q "StdioCollector" "$TARGET_DIR/Service.qml" || fail "Service.qml missing StdioCollector"
   grep -q "qs.Ui" "$TARGET_DIR/BarWidget.qml" || fail "BarWidget.qml missing qs.Ui import"
-  grep -q "PillSurface" "$TARGET_DIR/BarWidget.qml" || fail "BarWidget.qml missing PillSurface"
-  grep -q "IconText" "$TARGET_DIR/BarWidget.qml" || fail "BarWidget.qml missing IconText"
+  grep -q "^BarWidget {" "$TARGET_DIR/BarWidget.qml" || grep -q "BarWidget {" "$TARGET_DIR/BarWidget.qml" || fail "BarWidget.qml missing BarWidget base type"
+  grep -q "WidgetButton" "$TARGET_DIR/BarWidget.qml" || fail "BarWidget.qml missing WidgetButton"
   pass "QML imports present"
 }
 

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "io.github.pxllbt.media-idle-inhibit",
   "name": "Media Idle Inhibit",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "author": "pxllbt",
   "license": "MIT",
   "homepage": "https://github.com/pxllbt/media-idle-inhibit",
