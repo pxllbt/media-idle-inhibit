@@ -2,11 +2,11 @@
   "schemaVersion": 1,
   "id": "io.github.pxllbt.media-idle-inhibit",
   "name": "Media Idle Inhibit",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "author": "pxllbt",
   "license": "MIT",
   "homepage": "https://github.com/pxllbt/media-idle-inhibit",
-  "description": "Suppresses screensaver and lock while media is actively playing via MPRIS.",
+  "description": "Suppresses screensaver and lock while any MPRIS media is playing.",
   "kinds": [
     "service",
     "bar-widget"

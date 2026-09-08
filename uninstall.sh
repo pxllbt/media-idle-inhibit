@@ -10,21 +10,42 @@ disable_plugin() {
     echo "Warning: $SHELL_JSON not found" >&2
     return
   fi
-  python3 -c "
+  python3 - "$PLUGIN_ID" "$SHELL_JSON" <<'PY'
 import json
-with open('$SHELL_JSON') as f:
+import sys
+
+plugin_id, path = sys.argv[1], sys.argv[2]
+
+with open(path) as f:
     data = json.load(f)
-plugins = data.get('plugins', [])
+
+changed = False
+
+plugins = data.get("plugins", [])
 before = len(plugins)
-data['plugins'] = [p for p in plugins if not (isinstance(p, dict) and p.get('id') == '$PLUGIN_ID')]
-if len(data['plugins']) < before:
-    with open('$SHELL_JSON', 'w') as f:
+data["plugins"] = [p for p in plugins if not (isinstance(p, dict) and p.get("id") == plugin_id)]
+if len(data["plugins"]) < before:
+    changed = True
+
+layout = data.get("bar", {}).get("layout", {})
+if isinstance(layout, dict):
+    for section in layout.values():
+        if not isinstance(section, list):
+            continue
+        before = len(section)
+        pruned = [w for w in section if not (isinstance(w, dict) and w.get("id") == plugin_id)]
+        section[:] = pruned
+        if len(section) < before:
+            changed = True
+
+if changed:
+    with open(path, "w") as f:
         json.dump(data, f, indent=2)
-        f.write('\n')
-    print('Disabled $PLUGIN_ID in shell.json')
+        f.write("\n")
+    print("Disabled %s in %s" % (plugin_id, path))
 else:
-    print('$PLUGIN_ID was not enabled')
-" || echo "Warning: failed to update shell.json" >&2
+    print("%s was not enabled" % plugin_id)
+PY
 }
 
 remove_plugin() {

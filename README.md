@@ -1,70 +1,53 @@
-# io.github.pxllbt.media-idle-inhibit
-
-<https://github.com/pxllbt/media-idle-inhibit>
+# Media Idle Inhibit — Omarchy Plugin
 
 Suppresses the screensaver and session lock while media is actively playing, using
-D-Bus MPRIS and `omarchy-toggle-idle`. When a known player starts playback it runs
-`omarchy-toggle-idle on`; when all known players stop it runs `omarchy-toggle-idle off`.
+D-Bus MPRIS and Omarchy's native idle indicator. When any player starts playback it
+enables stay-awake; when all players stop it lets the system idle normally again.
+
+Works out of the box on every Omarchy setup — no configuration required.
 
 ## Features
 
 - Signal-based MPRIS detection via Quickshell's `Quickshell.Services.Mpris` (no polling)
-- Automatic toggle only for recognized players; other MPRIS clients are ignored
-- Optional bar widget: a `MEDIA` pill with icon + player name while active
+- **Any** playing MPRIS player counts, including web players and apps that do not
+  follow a fixed desktop-entry name
+- Per-player `isPlaying` observation for instant play/pause detection
+- Ownership-safe: stopping media never removes a stay-awake you enabled manually
+- Optional bar widget: a `MEDIA` pill with icon + player name while idle is inhibited
+- Self-healing: finds a stale idle-inhibit left by a crash and cleans it up on start
 - IPC diagnostics via `qs ipc call io-github-pxllbt-media-idle-inhibit status`
-- Stdout/stderr capture and error state surfaced through the bar widget tooltip
+- Fallback to directly writing the indicator file if `omarchy-toggle-idle` is absent
 
-## Supported players
+## Requirements
 
-- mpv, vlc, celluloid, gnome-mpv, totem, kodi
-- firefox, chrome, chromium, brave-browser
-- spotify
-- any other player exposing the standard `org.mpris.MediaPlayer2.*` interface
+- Omarchy shell (Wayland / Hyprland) with Quickshell
+- A D-Bus MPRIS player (mpv, VLC, Firefox, Chromium, Spotify, …) for detection
+- `omarchy-toggle-idle` is used when present (it ships with Omarchy); the plugin
+  falls back to writing the indicator file directly otherwise
 
 ## Install
 
-The plugin ships as a single folder of files — a whole, self-contained plugin.
-
-**Quick install (zip, no git required):**
+Recommended — managed, updatable install:
 
 ```bash
-curl -fsSL https://github.com/pxllbt/media-idle-inhibit/archive/refs/tags/v1.1.0.zip -o media-idle-inhibit.zip
-unzip media-idle-inhibit.zip
-cd media-idle-inhibit-1.0.0
-./install.sh
+omarchy plugin add https://github.com/pxllbt/media-idle-inhibit.git --enable --yes
+omarchy plugin enable io.github.pxllbt.media-idle-inhibit --section right
 ```
 
-`install.sh` copies the plugin to
-`~/.config/omarchy/plugins/io.github.pxllbt.media-idle-inhibit`, validates the
-manifest, enables it in `~/.config/omarchy/shell.json`, runs `validate.sh`, and
-restarts the shell.
+This clones the plugin into `~/.config/omarchy/plugins/io.github.pxllbt.media-idle-inhibit`,
+keeps a git checkout for updates (`omarchy plugin update io.github.pxllbt.media-idle-inhibit`),
+enables it, and places the bar widget in the right section.
 
-**Git-managed install (enables automatic updates):**
-
-```bash
-omarchy plugin add https://github.com/pxllbt/media-idle-inhibit.git --enable
-omarchy plugin update io.github.pxllbt.media-idle-inhibit
-```
-
-Installing via `omarchy plugin add` keeps a `.git` checkout, so
-`omarchy plugin update` pulls new releases automatically.
-
-**From a local checkout:**
+From a local checkout:
 
 ```bash
 cd /path/to/media-idle-inhibit
 ./install.sh
 ```
 
-### Breaking change
-
-If a previous `pixllbeat.media-idle-inhibit` install exists, uninstall it first:
-
-```bash
-~/.config/omarchy/plugins/pixllbeat.media-idle-inhibit/uninstall.sh
-```
-
-The new plugin id is `io.github.pxllbt.media-idle-inhibit`.
+`install.sh` copies the plugin to the plugins directory, validates the manifest,
+registers it in `~/.config/omarchy/shell.json` (plugins list + right bar section),
+runs `validate.sh`, and restarts the shell.
 
 ## Uninstall
 
@@ -72,27 +55,17 @@ The new plugin id is `io.github.pxllbt.media-idle-inhibit`.
 ~/.config/omarchy/plugins/io.github.pxllbt.media-idle-inhibit/uninstall.sh
 ```
 
-## Manual install
+## How it works
 
-```bash
-cp -r /path/to/media-idle-inhibit ~/.config/omarchy/plugins/io.github.pxllbt.media-idle-inhibit
-```
-
-Add the plugin to `~/.config/omarchy/shell.json`:
-
-```json
-{
-  "plugins": [
-    { "id": "io.github.pxllbt.media-idle-inhibit" }
-  ]
-}
-```
-
-Then restart the shell:
-
-```bash
-omarchy restart shell
-```
+1. When a known MPRIS player starts playing, the service enables Omarchy's
+   stay-awake indicator and records an ownership marker.
+2. When the last playing player pauses or stops, it releases the indicator — but
+   only if an ownership marker is present and no manual change happened after our
+   own.
+3. Play/pause changes are watched via each player's `isPlaying` signal, so
+   transitions are applied immediately instead of being missed.
+4. Rapid play/pause changes are queued, so the system always ends in the state
+   requested last.
 
 ## Debugging
 
@@ -103,25 +76,26 @@ qs ipc call io-github-pxllbt-media-idle-inhibit status
 ```
 
 Returns a JSON object with `mediaPlaying`, `activePlayerName`, `lastToggle`,
-`lastError`, and `toggleInFlight`.
+`lastToggleValue`, `lastError`, and `toggleInFlight`.
 
 ## Known limitations
 
-- Only one playing player is tracked at a time (the first known player found).
-- The idle toggle is best-effort: if `omarchy-toggle-idle` exits non-zero, the error
-  is recorded in `lastError` and surfaced via the bar widget tooltip, with no retry.
+- Idle is suppressed while any single player is playing; the most recently
+  detected playing player is named in the widget.
+- The idle toggle is best-effort: if the command exits non-zero, the error is
+  recorded in `lastError` and surfaced via the bar widget tooltip.
 - The bar widget reflects service state over IPC; it does not drive toggling itself.
 
 ## Validation
 
-Run the bundled validator:
+Run the bundled validator from a repo checkout or the installed plugin:
 
 ```bash
 ~/.config/omarchy/plugins/io.github.pxllbt.media-idle-inhibit/validate.sh
 ```
 
-Manual smoke test: start playback in mpv/vlc/firefox → wait >150s → screensaver
-must not trigger; stop media → wait → screensaver works normally.
+Manual smoke test: start playback in mpv/vlc/firefox → idle must not trigger;
+stop media → idle works normally again.
 
 ## License
 

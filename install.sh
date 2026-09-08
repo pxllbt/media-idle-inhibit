@@ -4,6 +4,7 @@ set -euo pipefail
 PLUGIN_ID="io.github.pxllbt.media-idle-inhibit"
 PLUGIN_DIR="$HOME/.config/omarchy/plugins/$PLUGIN_ID"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SHELL_JSON="$HOME/.config/omarchy/shell.json"
 
 validate_manifest() {
   if [ ! -f "$SCRIPT_DIR/manifest.json" ]; then
@@ -24,30 +25,56 @@ validate_manifest() {
 }
 
 enable_plugin() {
-  local shell_json="$HOME/.config/omarchy/shell.json"
-  if [ ! -f "$shell_json" ]; then
-    echo "Error: $shell_json not found" >&2
+  if [ ! -f "$SHELL_JSON" ]; then
+    echo "Error: $SHELL_JSON not found" >&2
     exit 1
   fi
-  if ! python3 -c "
-import json, sys
-with open('$shell_json') as f:
+  python3 - "$PLUGIN_ID" "$SHELL_JSON" <<'PY'
+import json
+import sys
+
+plugin_id, path = sys.argv[1], sys.argv[2]
+
+with open(path) as f:
     data = json.load(f)
-plugins = data.get('plugins', [])
-ids = [p.get('id') for p in plugins if isinstance(p, dict)]
-if '$PLUGIN_ID' not in ids:
-    plugins.append({'id': '$PLUGIN_ID'})
-    data['plugins'] = plugins
-    with open('$shell_json', 'w') as f:
-        json.dump(data, f, indent=2)
-        f.write('\n')
-    print('Enabled $PLUGIN_ID in shell.json')
+
+bar = data.setdefault("bar", {})
+layout = bar.setdefault("layout", {})
+plugins = data.setdefault("plugins", [])
+
+entry = {"id": plugin_id}
+added_plugin = False
+for p in plugins:
+    if isinstance(p, dict) and p.get("id") == plugin_id:
+        break
 else:
-    print('$PLUGIN_ID already enabled')
-" ; then
-    echo "Error: failed to update shell.json" >&2
-    exit 1
-  fi
+    plugins.append(dict(entry))
+    added_plugin = True
+
+section = layout.setdefault("right", [])
+added_widget = False
+for w in section:
+    if isinstance(w, dict) and w.get("id") == plugin_id:
+        break
+else:
+    # Place after omarchy.tray to mirror the registry's default anchor; fall
+    # back to appending if the tray widget is not present.
+    for i, w in enumerate(section):
+        if isinstance(w, dict) and w.get("id") == "omarchy.tray":
+            section.insert(i + 1, dict(entry))
+            break
+    else:
+        section.append(dict(entry))
+    added_widget = True
+
+if added_plugin or added_widget:
+    with open(path, "w") as f:
+        json.dump(data, f, indent=2)
+        f.write("\n")
+    print("Enabled %s in %s" % (plugin_id, path))
+else:
+    print("%s already enabled in %s" % (plugin_id, path))
+PY
 }
 
 copy_plugin() {
@@ -75,7 +102,7 @@ main() {
   copy_plugin
   enable_plugin
   if [ -x "$PLUGIN_DIR/validate.sh" ]; then
-    "$PLUGIN_DIR/validate.sh" || warn "Validation script reported issues"
+    "$PLUGIN_DIR/validate.sh" || echo "Warning: validation script reported issues" >&2
   fi
   restart_shell
   echo "Installation complete."
