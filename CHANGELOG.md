@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.2.2] - 2026-09-08
+
+### Fixed
+- The ownership marker is now removed when a manual stay-awake change blocks
+  the media-stop release, so a stale marker cannot linger after the plugin
+  stopped owning idle.
+
 ## [1.2.1] - 2026-09-08
 
 ### Fixed

@@ -44,7 +44,7 @@ Item {
     "  if command -v omarchy-toggle-idle >/dev/null 2>&1; then " +
     "    if omarchy-toggle-idle allow-idle; then rm -f \"$m\"; else echo \"failed to allow idle\"; exit 1; fi; " +
     "  else rm -f \"$s\"; rm -f \"$m\"; fi; " +
-    "else exit 0; fi"
+    "else rm -f \"$m\"; exit 0; fi"
   ]
 
   function currentPlayingPlayer() {
