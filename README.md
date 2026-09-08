@@ -1,10 +1,10 @@
-# Media Idle Inhibit — Omarchy Plugin
+# Media Idle Inhibit - Omarchy Plugin
 
 Suppresses the screensaver and session lock while media is actively playing, using
 D-Bus MPRIS and Omarchy's native idle indicator. When any player starts playback it
 enables stay-awake; when all players stop it lets the system idle normally again.
 
-Works out of the box on every Omarchy setup — no configuration required.
+Requires no configuration on any Omarchy setup.
 
 ## Features
 
@@ -27,7 +27,7 @@ Works out of the box on every Omarchy setup — no configuration required.
 
 ## Install
 
-Recommended — managed, updatable install:
+Recommended (managed, updatable install):
 
 ```bash
 omarchy plugin add https://github.com/pxllbt/media-idle-inhibit.git --enable --yes
@@ -59,7 +59,7 @@ runs `validate.sh`, and restarts the shell.
 
 1. When a known MPRIS player starts playing, the service enables Omarchy's
    stay-awake indicator and records an ownership marker.
-2. When the last playing player pauses or stops, it releases the indicator — but
+2. When the last playing player pauses or stops, it releases the indicator, but
    only if an ownership marker is present and no manual change happened after our
    own.
 3. Play/pause changes are watched via each player's `isPlaying` signal, so

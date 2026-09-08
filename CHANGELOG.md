@@ -23,7 +23,7 @@ All notable changes to this project are documented in this file.
   ownership marker guards releases, mirroring the `idle-owner` pattern of
   Omarchy's own `omarchy-update-stay-awake`.
 - Rapid play/pause changes no longer drop toggle requests: a pending-state queue
-  ensures the last requested state always wins.
+  keeps the last requested state.
 - Startup self-heals stale owner markers left over from a crash or restart.
 
 ### Added

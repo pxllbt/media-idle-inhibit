@@ -1,8 +1,8 @@
-// Media Idle Inhibit — Omarchy bar widget
+// Media Idle Inhibit - Omarchy bar widget
 //
 // Author:  pxllbt (https://github.com/pxllbt)
 // Repo:    https://github.com/pxllbt/media-idle-inhibit
-// License: MIT — see LICENSE.
+// License: MIT - see LICENSE.
 //
 // Shows a small pill while any player is actively playing, sourced from the
 // plugin's service over IPC. It is purely informational: toggling is done by
@@ -53,7 +53,7 @@ BarWidget {
     ? "No active media"
     : (root.toggleInFlight
       ? "Idle inhibit pending…"
-      : ("Idle inhibited — " + root.pillLabel
+      : ("Idle inhibited: " + root.pillLabel
          + (root.lastError ? "\nError: " + root.lastError : "")))
 
   visible: root.mediaPlaying
