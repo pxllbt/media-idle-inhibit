@@ -15,7 +15,7 @@ Requires no configuration on any Omarchy setup.
 - Ownership-safe: stopping media never removes a stay-awake you enabled manually
 - Optional bar widget: a `MEDIA` pill with icon + player name while idle is inhibited
 - Self-healing: finds a stale idle-inhibit left by a crash and cleans it up on start
-- IPC diagnostics via `qs ipc call io-github-pxllbt-media-idle-inhibit status`
+- IPC diagnostics via `omarchy-shell io-github-pxllbt-media-idle-inhibit status`
 - Fallback to directly writing the indicator file if `omarchy-toggle-idle` is absent
 
 ## Requirements
@@ -72,8 +72,12 @@ runs `validate.sh`, and restarts the shell.
 Query the service diagnostic status over IPC:
 
 ```bash
-qs ipc call io-github-pxllbt-media-idle-inhibit status
+omarchy-shell io-github-pxllbt-media-idle-inhibit status
 ```
+
+(The wrapper forwards to quickshell IPC. On setups where omarchy is the single
+quickshell instance, the equivalent `qs ipc call io-github-pxllbt-media-idle-inhibit status`
+works as well.)
 
 Returns a JSON object with `mediaPlaying`, `activePlayerName`, `lastToggle`,
 `lastToggleValue`, `lastError`, and `toggleInFlight`.
